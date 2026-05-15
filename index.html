@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Command — McKylin Rowe</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0c0c;
+  --s1: #141414;
+  --s2: #1c1c1c;
+  --s3: #242424;
+  --b1: #2a2a2a;
+  --b2: #383838;
+  --tx: #e8e8e8;
+  --mu: #888;
+  --mu2: #555;
+  --gr: #b8f050;
+  --or: #f0a050;
+  --bl: #50c0f0;
+  --re: #f05050;
+  --pu: #c050f0;
+  --pk: #f050a0;
+  --fd: 'Bebas Neue', sans-serif;
+  --fb: 'DM Sans', sans-serif;
+  --fm: 'DM Mono', monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--tx);font-family:var(--fb);font-size:14px;height:100vh;display:flex;flex-direction:column;overflow:hidden;}
+
+/* ── HEADER ── */
+.hd{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid var(--b1);flex-shrink:0;background:var(--s1);}
+.hd-logo{font-family:var(--fd);font-size:22px;letter-spacing:3px;color:var(--gr);}
+.hd-sub{font-family:var(--fm);font-size:9px;color:var(--mu2);letter-spacing:1px;margin-top:1px;}
+.hd-date{font-family:var(--fm);font-size:10px;color:var(--mu);text-align:right;}
+
+/* ── TABS ── */
+.tabs{display:flex;border-bottom:1px solid var(--b1);background:var(--s1);flex-shrink:0;overflow-x:auto;}
+.tab{padding:10px 16px;font-family:var(--fm);font-size:10px;letter-spacing:1px;color:var(--mu);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;text-transform:uppercase;}
+.tab:hover{color:var(--tx);}
+.tab.on{color:var(--gr);border-bottom-color:var(--gr);}
+
+/* ── PAGES ── */
+.pages{flex:1;overflow:hidden;position:relative;}
+.page{display:none;height:100%;overflow-y:auto;padding:20px;}
+.page.on{display:block;}
+
+/* ── CARDS ── */
+.card{background:var(--s1);border:1px solid var(--b1);border-radius:8px;padding:16px;margin-bottom:12px;}
+.card-title{font-family:var(--fm);font-size:9px;letter-spacing:2px;color:var(--mu);text-transform:uppercase;margin-bottom:10px;}
+
+/* ── SECTION HEADERS ── */
+.sec{font-family:var(--fd);font-size:20px;letter-spacing:2px;color:var(--tx);margin-bottom:4px;}
+.sec-sub{font-family:var(--fm);font-size:10px;color:var(--mu);margin-bottom:16px;}
+
+/* ── DAILY STRUCTURE ── */
+.day-grid{display:grid;gap:8px;}
+.time-block{display:flex;gap:12px;align-items:stretch;background:var(--s2);border-radius:8px;border:1px solid var(--b1);overflow:hidden;transition:border-color .2s;}
+.time-block:hover{border-color:var(--b2);}
+.time-block.anchor{border-left:3px solid var(--gr);}
+.time-block.flex-block{border-left:3px solid var(--bl);}
+.time-block.protect{border-left:3px solid var(--or);}
+.tb-time{font-family:var(--fm);font-size:10px;color:var(--mu);padding:12px 10px;min-width:80px;text-align:right;flex-shrink:0;border-right:1px solid var(--b1);}
+.tb-body{padding:12px 14px;flex:1;}
+.tb-label{font-family:var(--fm);font-size:10px;letter-spacing:1px;color:var(--mu);text-transform:uppercase;margin-bottom:3px;}
+.tb-name{font-size:14px;font-weight:500;color:var(--tx);margin-bottom:3px;}
+.tb-detail{font-size:12px;color:var(--mu);line-height:1.5;}
+.tb-badge{display:inline-block;font-family:var(--fm);font-size:8px;letter-spacing:1px;padding:2px 6px;border-radius:3px;margin-top:4px;}
+.badge-anchor{background:rgba(184,240,80,.12);color:var(--gr);}
+.badge-flex{background:rgba(80,192,240,.12);color:var(--bl);}
+.badge-protect{background:rgba(240,160,80,.12);color:var(--or);}
+
+/* ── TASKS ── */
+.task-input-row{display:flex;gap:8px;margin-bottom:14px;}
+.inp{background:var(--s2);border:1px solid var(--b1);border-radius:6px;padding:9px 12px;color:var(--tx);font-family:var(--fb);font-size:13px;outline:none;transition:border-color .15s;}
+.inp:focus{border-color:var(--b2);}
+.inp::placeholder{color:var(--mu2);}
+.inp.full{flex:1;}
+.btn{font-family:var(--fm);font-size:10px;letter-spacing:1px;padding:9px 14px;border-radius:6px;border:none;cursor:pointer;text-transform:uppercase;transition:all .15s;white-space:nowrap;}
+.btn-gr{background:var(--gr);color:#000;}
+.btn-gr:hover{opacity:.85;}
+.btn-ghost{background:none;border:1px solid var(--b1);color:var(--mu);}
+.btn-ghost:hover{border-color:var(--b2);color:var(--tx);}
+
+.cat-row{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+.cat-btn{font-family:var(--fm);font-size:9px;letter-spacing:1px;padding:5px 10px;border-radius:4px;border:1px solid var(--b1);background:none;color:var(--mu);cursor:pointer;transition:all .15s;text-transform:uppercase;}
+.cat-btn:hover{border-color:var(--b2);color:var(--tx);}
+.cat-btn.on{background:var(--s3);color:var(--tx);border-color:var(--b2);}
+
+.task-list{display:flex;flex-direction:column;gap:4px;}
+.task-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--s2);border-radius:6px;border:1px solid transparent;transition:all .15s;cursor:default;}
+.task-item:hover{border-color:var(--b1);}
+.task-item.done{opacity:.4;}
+.task-item.done .task-text{text-decoration:line-through;}
+.task-check{width:18px;height:18px;border-radius:4px;border:1px solid var(--b2);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.task-check:hover{border-color:var(--gr);}
+.task-check.checked{background:var(--gr);border-color:var(--gr);}
+.task-check.checked::after{content:'✓';font-size:10px;color:#000;font-weight:700;}
+.task-text{flex:1;font-size:13px;color:var(--tx);}
+.task-cat{font-family:var(--fm);font-size:8px;letter-spacing:1px;padding:2px 6px;border-radius:3px;text-transform:uppercase;}
+.task-del{font-size:14px;color:var(--mu2);cursor:pointer;padding:2px 6px;border-radius:3px;transition:all .15s;display:none;}
+.task-item:hover .task-del{display:block;}
+.task-del:hover{color:var(--re);background:rgba(240,80,80,.1);}
+
+.cat-acting{background:rgba(80,192,240,.1);color:var(--bl);}
+.cat-writing{background:rgba(184,240,80,.1);color:var(--gr);}
+.cat-joyus{background:rgba(192,80,240,.1);color:var(--pu);}
+.cat-life{background:rgba(240,160,80,.1);color:var(--or);}
+.cat-money{background:rgba(240,80,160,.1);color:var(--pk);}
+
+/* ── ANCHOR CHECKLIST ── */
+.anchor-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+.anchor-item{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--s2);border-radius:8px;border:1px solid var(--b1);cursor:pointer;transition:all .15s;}
+.anchor-item:hover{border-color:var(--b2);}
+.anchor-item.done{border-color:rgba(184,240,80,.3);background:rgba(184,240,80,.05);}
+.anchor-dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--b2);flex-shrink:0;transition:all .15s;display:flex;align-items:center;justify-content:center;}
+.anchor-item.done .anchor-dot{background:var(--gr);border-color:var(--gr);}
+.anchor-item.done .anchor-dot::after{content:'✓';font-size:9px;color:#000;font-weight:800;}
+.anchor-label{font-size:13px;color:var(--tx);}
+.anchor-sub{font-family:var(--fm);font-size:10px;color:var(--mu);margin-top:1px;}
+
+/* ── FOCUS TIMER ── */
+.timer-wrap{text-align:center;padding:24px 0 16px;}
+.timer-display{font-family:var(--fd);font-size:72px;letter-spacing:4px;color:var(--gr);line-height:1;}
+.timer-label{font-family:var(--fm);font-size:10px;color:var(--mu);letter-spacing:2px;margin-top:4px;}
+.timer-btns{display:flex;gap:8px;justify-content:center;margin-top:14px;}
+.timer-preset{display:flex;gap:6px;justify-content:center;margin-top:10px;}
+.preset-btn{font-family:var(--fm);font-size:9px;padding:5px 10px;border-radius:4px;border:1px solid var(--b1);background:none;color:var(--mu);cursor:pointer;transition:all .15s;}
+.preset-btn:hover{border-color:var(--b2);color:var(--tx);}
+
+/* ── WINS LOG ── */
+.win-input-row{display:flex;gap:8px;margin-bottom:14px;}
+.win-item{display:flex;gap:10px;padding:10px 12px;background:var(--s2);border-radius:6px;margin-bottom:6px;border-left:3px solid var(--gr);}
+.win-text{flex:1;font-size:13px;color:var(--tx);}
+.win-date{font-family:var(--fm);font-size:9px;color:var(--mu);flex-shrink:0;padding-top:1px;}
+
+/* ── PROGRESS BARS ── */
+.prog-item{margin-bottom:14px;}
+.prog-label{display:flex;justify-content:space-between;margin-bottom:5px;}
+.prog-name{font-size:13px;color:var(--tx);}
+.prog-pct{font-family:var(--fm);font-size:10px;color:var(--mu);}
+.prog-bar{height:6px;background:var(--s3);border-radius:3px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:3px;transition:width .3s;}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:40px 20px;color:var(--mu2);}
+.empty-icon{font-size:32px;margin-bottom:8px;}
+.empty-txt{font-family:var(--fm);font-size:11px;letter-spacing:1px;}
+
+/* ── SCROLL ── */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px;}
+
+@media(max-width:600px){
+  .anchor-grid{grid-template-columns:1fr;}
+  .timer-display{font-size:56px;}
+}
+</style>
+</head>
+<body>
+
+<div class="hd">
+  <div>
+    <div class="hd-logo">COMMAND</div>
+    <div class="hd-sub">McKylin Rowe · Daily Operations</div>
+  </div>
+  <div class="hd-date" id="hd-date"></div>
+</div>
+
+<div class="tabs">
+  <div class="tab on" onclick="showTab('structure')">Daily Structure</div>
+  <div class="tab" onclick="showTab('tasks')">Tasks</div>
+  <div class="tab" onclick="showTab('focus')">Focus Timer</div>
+  <div class="tab" onclick="showTab('wins')">Wins Log</div>
+  <div class="tab" onclick="showTab('lanes')">Lanes</div>
+</div>
+
+<div class="pages">
+
+<!-- ══════════════════════════════════════
+     TAB 1 · DAILY STRUCTURE
+══════════════════════════════════════ -->
+<div class="page on" id="page-structure">
+  <div class="sec">Daily Anchors</div>
+  <div class="sec-sub">Three non-negotiable moments that structure your day. Everything else fits around these.</div>
+
+  <div class="anchor-grid" id="anchor-grid">
+    <!-- populated by JS -->
+  </div>
+
+  <div class="card" style="margin-top:4px;">
+    <div class="card-title">Today's Reset — if you've done nothing yet</div>
+    <div style="font-size:13px;color:var(--mu);line-height:1.8;">
+      <span style="color:var(--gr);margin-right:8px;">1.</span>Put your phone in another room for 30 minutes.<br>
+      <span style="color:var(--gr);margin-right:8px;">2.</span>Open one task. Not all of them. One.<br>
+      <span style="color:var(--gr);margin-right:8px;">3.</span>Set the timer below for 25 minutes and just start.<br>
+      <span style="color:var(--gr);margin-right:8px;">4.</span>After it ends, check this box and log it as a win.
+    </div>
+  </div>
+
+  <div class="sec" style="margin-top:20px;">Daily Schedule</div>
+  <div class="sec-sub">Rough time blocks — not a prison, just a shape for the day.</div>
+
+  <div class="day-grid">
+    <div class="time-block anchor">
+      <div class="tb-time">8:00 AM</div>
+      <div class="tb-body">
+        <div class="tb-label">Anchor 1 — Morning Start</div>
+        <div class="tb-name">Wake, no phone, move your body</div>
+        <div class="tb-detail">5–10 min. Walk around the block, stretch, anything. No phone for first 20 min. This tells your brain the day has started.</div>
+        <div class="tb-badge badge-anchor">ANCHOR · NON-NEGOTIABLE</div>
+      </div>
+    </div>
+
+    <div class="time-block flex-block">
+      <div class="tb-time">9:00 AM</div>
+      <div class="tb-body">
+        <div class="tb-label">Work Block 1 — Priority task</div>
+        <div class="tb-name">Acting, Writing, or Foundation</div>
+        <div class="tb-detail">Pick ONE thing from your task list. Actors Access submissions, one page of Hula Hoop, one Joy+Us email. Use the Focus Timer. 25–50 min.</div>
+        <div class="tb-badge badge-flex">FLEX · ROTATE LANES</div>
+      </div>
+    </div>
+
+    <div class="time-block flex-block">
+      <div class="tb-time">10:30 AM</div>
+      <div class="tb-body">
+        <div class="tb-label">Work Block 2 — Second task</div>
+        <div class="tb-name">Different lane than Block 1</div>
+        <div class="tb-detail">If Block 1 was Acting, do Writing or Foundation here. Keeps momentum across all lanes without burning out on one.</div>
+        <div class="tb-badge badge-flex">FLEX</div>
+      </div>
+    </div>
+
+    <div class="time-block protect">
+      <div class="tb-time">12:00 PM</div>
+      <div class="tb-body">
+        <div class="tb-label">Protected — Lunch + decompress</div>
+        <div class="tb-name">Actual break. Not phone-doom. Eat.</div>
+        <div class="tb-detail">Step away from the screen. This isn't wasted time — it's what makes the afternoon work possible.</div>
+        <div class="tb-badge badge-protect">PROTECT</div>
+      </div>
+    </div>
+
+    <div class="time-block flex-block">
+      <div class="tb-time">1:30 PM</div>
+      <div class="tb-body">
+        <div class="tb-label">Work Block 3 — Admin / Comms</div>
+        <div class="tb-name">Email, submissions, logistics</div>
+        <div class="tb-detail">Actors Access, Joy+Us emails, LiteHouse follow-ups, Presley Clardy logistics, anything that needs a response. Batch it here instead of all day.</div>
+        <div class="tb-badge badge-flex">FLEX</div>
+      </div>
+    </div>
+
+    <div class="time-block protect">
+      <div class="tb-time">3:00 PM</div>
+      <div class="tb-body">
+        <div class="tb-label">Protected — Workout or Walk</div>
+        <div class="tb-name">Planet Fitness or 30-min walk</div>
+        <div class="tb-detail">3–4x week at Planet Fitness. Off days: walk. This is non-negotiable for your mental state — not just your body. Movement is the reset button.</div>
+        <div class="tb-badge badge-protect">PROTECT</div>
+      </div>
+    </div>
+
+    <div class="time-block flex-block">
+      <div class="tb-time">5:00 PM</div>
+      <div class="tb-body">
+        <div class="tb-label">Creative Block — Writing or Reel</div>
+        <div class="tb-name">Hula Hoop pages / Halvsies / Untapped</div>
+        <div class="tb-detail">Evening is when the internal critic quiets. Use it for generative work — dictate scenes, write long-form, edit footage.</div>
+        <div class="tb-badge badge-flex">FLEX</div>
+      </div>
+    </div>
+
+    <div class="time-block anchor">
+      <div class="tb-time">9:00 PM</div>
+      <div class="tb-body">
+        <div class="tb-label">Anchor 2 — Wind Down</div>
+        <div class="tb-name">Phone away. Review tomorrow.</div>
+        <div class="tb-detail">Spend 5 min looking at tomorrow's tasks. Pick ONE thing to start with. Then put the phone in another room. This is how you stop the loop.</div>
+        <div class="tb-badge badge-anchor">ANCHOR · NON-NEGOTIABLE</div>
+      </div>
+    </div>
+
+    <div class="time-block anchor">
+      <div class="tb-time">10:30 PM</div>
+      <div class="tb-body">
+        <div class="tb-label">Anchor 3 — Actual sleep</div>
+        <div class="tb-name">Lights out. Not just lying there.</div>
+        <div class="tb-detail">Your body and your brain are your instruments. They need sleep to work. This one is worth protecting harder than anything else.</div>
+        <div class="tb-badge badge-anchor">ANCHOR · NON-NEGOTIABLE</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB 2 · TASKS
+══════════════════════════════════════ -->
+<div class="page" id="page-tasks">
+  <div class="sec">Task Board</div>
+  <div class="sec-sub">Add anything. Filter by lane. Check it off.</div>
+
+  <div class="task-input-row">
+    <input class="inp full" id="task-inp" placeholder="Add a task..." onkeydown="if(event.key==='Enter')addTask()">
+    <select class="inp" id="task-cat" style="min-width:110px;">
+      <option value="acting">Acting</option>
+      <option value="writing">Writing</option>
+      <option value="joyus">Joy+Us</option>
+      <option value="life">Life</option>
+      <option value="money">Money</option>
+    </select>
+    <button class="btn btn-gr" onclick="addTask()">Add</button>
+  </div>
+
+  <div class="cat-row">
+    <button class="cat-btn on" onclick="filterTasks('all',this)">All</button>
+    <button class="cat-btn" onclick="filterTasks('acting',this)">Acting</button>
+    <button class="cat-btn" onclick="filterTasks('writing',this)">Writing</button>
+    <button class="cat-btn" onclick="filterTasks('joyus',this)">Joy+Us</button>
+    <button class="cat-btn" onclick="filterTasks('life',this)">Life</button>
+    <button class="cat-btn" onclick="filterTasks('money',this)">Money</button>
+  </div>
+
+  <div class="task-list" id="task-list"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB 3 · FOCUS TIMER
+══════════════════════════════════════ -->
+<div class="page" id="page-focus">
+  <div class="sec">Focus Timer</div>
+  <div class="sec-sub">Phone in another room. One task. Start the clock.</div>
+
+  <div class="card">
+    <div class="card-title">What are you working on?</div>
+    <input class="inp full" id="focus-task" placeholder="Name the task (e.g. write 2 pages of Hula Hoop)">
+  </div>
+
+  <div class="timer-wrap">
+    <div class="timer-display" id="timer-display">25:00</div>
+    <div class="timer-label" id="timer-label">READY</div>
+    <div class="timer-preset">
+      <button class="preset-btn" onclick="setTimer(25)">25 MIN</button>
+      <button class="preset-btn" onclick="setTimer(45)">45 MIN</button>
+      <button class="preset-btn" onclick="setTimer(50)">50 MIN</button>
+      <button class="preset-btn" onclick="setTimer(90)">90 MIN</button>
+    </div>
+    <div class="timer-btns">
+      <button class="btn btn-gr" id="timer-start" onclick="toggleTimer()">START</button>
+      <button class="btn btn-ghost" onclick="resetTimer()">RESET</button>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:8px;">
+    <div class="card-title">The Rule</div>
+    <div style="font-size:13px;color:var(--mu);line-height:1.8;">
+      Once you hit start — <span style="color:var(--tx);">nothing else exists</span> until it ends.<br>
+      Phone in another room. One tab open. One task.<br>
+      When it ends, log a win. Then decide if you go again.
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB 4 · WINS LOG
+══════════════════════════════════════ -->
+<div class="page" id="page-wins">
+  <div class="sec">Wins Log</div>
+  <div class="sec-sub">Everything you completed. Big and small. Evidence against the voice that says you're wasting time.</div>
+
+  <div class="win-input-row">
+    <input class="inp full" id="win-inp" placeholder="Log a win..." onkeydown="if(event.key==='Enter')addWin()">
+    <button class="btn btn-gr" onclick="addWin()">Log It</button>
+  </div>
+
+  <div id="win-list"></div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TAB 5 · LANES
+══════════════════════════════════════ -->
+<div class="page" id="page-lanes">
+  <div class="sec">Active Lanes</div>
+  <div class="sec-sub">Your work right now, by category.</div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--bl);">Acting</div>
+    <div class="prog-item">
+      <div class="prog-label"><span class="prog-name">Actors Access — active submissions</span><span class="prog-pct" id="aa-pct">—</span></div>
+      <div class="prog-bar"><div class="prog-fill" id="aa-bar" style="width:0%;background:var(--bl);"></div></div>
+    </div>
+    <div style="font-size:12px;color:var(--mu);line-height:1.7;margin-top:8px;">
+      → Actors Access: submit to open breakdowns daily<br>
+      → LiteHouse: follow up with Joshua/Kristin re: agent search<br>
+      → Reel: update with Missing Pieces, Lily, Duel Plans footage<br>
+      → Missing Pieces: festival notifications monitoring
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--gr);">Writing</div>
+    <div style="font-size:12px;color:var(--mu);line-height:1.7;">
+      → <span style="color:var(--re);font-family:var(--fm);font-size:10px;">DEADLINE MAY</span> The Death of the Hula Hoop — draft<br>
+      → Halvsies — in revision<br>
+      → Bob Ross 2.7 — needs contest/Black List circulation<br>
+      → Screenplay workflow: dictate → Claude cleans → Final Draft
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--pu);">Joy+Us Foundation</div>
+    <div style="font-size:12px;color:var(--mu);line-height:1.7;">
+      → <span style="color:var(--or);font-family:var(--fm);font-size:10px;">MAY 29</span> Legends Brunch — Chicken N Pickle OKC<br>
+      → <span style="color:var(--or);font-family:var(--fm);font-size:10px;">MAY 27–JUN 1</span> WCWS Joy Journey — Presley Clardy, OKC<br>
+      → Sponsorship outreach — 15 OKC companies<br>
+      → Untapped documentary — NYC bar scouting
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:var(--or);">Life / Money</div>
+    <div style="font-size:12px;color:var(--mu);line-height:1.7;">
+      → Paris trip savings — September target<br>
+      → Trivia hosting (Bibliophools) — weekly<br>
+      → Personal training clients — weekly sessions<br>
+      → Therapy call — Thursday
+    </div>
+  </div>
+</div>
+
+</div><!-- /pages -->
+
+<script>
+// ── DATE ──
+const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const now=new Date();
+document.getElementById('hd-date').innerHTML=days[now.getDay()]+' '+months[now.getMonth()]+' '+now.getDate()+'<br><span style="font-size:9px;color:var(--mu2);">'+now.getFullYear()+'</span>';
+
+// ── TABS ──
+function showTab(id){
+  document.querySelectorAll('.tab').forEach((t,i)=>{
+    const ids=['structure','tasks','focus','wins','lanes'];
+    t.classList.toggle('on',ids[i]===id);
+  });
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));
+  document.getElementById('page-'+id).classList.add('on');
+}
+
+// ── ANCHORS ──
+const ANCHORS=[
+  {id:'a1',label:'Morning: no phone first 20 min',sub:'Wake up, move, start'},
+  {id:'a2',label:'Work Block 1 done',sub:'25+ min on one priority task'},
+  {id:'a3',label:'Moved my body today',sub:'Gym or walk'},
+  {id:'a4',label:'Phone away by 9 PM',sub:'Wind down, review tomorrow'},
+  {id:'a5',label:'Picked tomorrow\'s first task',sub:'Decide tonight, not in the morning'},
+  {id:'a6',label:'No doom scroll tonight',sub:'Protect sleep window'},
+];
+
+const AK='cmd_anchors_'+now.toDateString();
+let anchorState=JSON.parse(localStorage.getItem(AK)||'{}');
+
+function renderAnchors(){
+  const g=document.getElementById('anchor-grid');
+  g.innerHTML=ANCHORS.map(a=>`
+    <div class="anchor-item${anchorState[a.id]?' done':''}" onclick="toggleAnchor('${a.id}')">
+      <div class="anchor-dot"></div>
+      <div>
+        <div class="anchor-label">${a.label}</div>
+        <div class="anchor-sub">${a.sub}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleAnchor(id){
+  anchorState[id]=!anchorState[id];
+  localStorage.setItem(AK,JSON.stringify(anchorState));
+  renderAnchors();
+}
+renderAnchors();
+
+// ── TASKS ──
+const TK='cmd_tasks';
+let tasks=JSON.parse(localStorage.getItem(TK)||'[]');
+let taskFilter='all';
+
+const SEED=[
+  {id:'t1',text:'Check Actors Access — submit to open breakdowns',cat:'acting',done:false},
+  {id:'t2',text:'Hula Hoop — write or dictate 2 pages',cat:'writing',done:false},
+  {id:'t3',text:'Joy+Us — Presley Clardy WCWS logistics',cat:'joyus',done:false},
+  {id:'t4',text:'Legends Brunch — sponsorship follow-ups',cat:'joyus',done:false},
+  {id:'t5',text:'Therapy call — Thursday',cat:'life',done:false},
+  {id:'t6',text:'Paris savings deposit — $200',cat:'money',done:false},
+];
+if(!tasks.length){tasks=SEED;localStorage.setItem(TK,JSON.stringify(tasks));}
+
+function saveTasks(){localStorage.setItem(TK,JSON.stringify(tasks));}
+
+function addTask(){
+  const inp=document.getElementById('task-inp');
+  const cat=document.getElementById('task-cat').value;
+  const text=inp.value.trim();
+  if(!text)return;
+  tasks.unshift({id:'t'+Date.now(),text,cat,done:false});
+  saveTasks();
+  renderTasks();
+  inp.value='';
+}
+
+function toggleTask(id){
+  const t=tasks.find(t=>t.id===id);
+  if(t)t.done=!t.done;
+  saveTasks();
+  renderTasks();
+}
+
+function deleteTask(id){
+  tasks=tasks.filter(t=>t.id!==id);
+  saveTasks();
+  renderTasks();
+}
+
+function filterTasks(cat,btn){
+  taskFilter=cat;
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderTasks();
+}
+
+function renderTasks(){
+  const list=document.getElementById('task-list');
+  const filtered=taskFilter==='all'?tasks:tasks.filter(t=>t.cat===taskFilter);
+  if(!filtered.length){
+    list.innerHTML='<div class="empty"><div class="empty-icon">✓</div><div class="empty-txt">Nothing here yet</div></div>';
+    return;
+  }
+  list.innerHTML=filtered.map(t=>`
+    <div class="task-item${t.done?' done':''}">
+      <div class="task-check${t.done?' checked':''}" onclick="toggleTask('${t.id}')"></div>
+      <div class="task-text">${t.text}</div>
+      <span class="task-cat cat-${t.cat}">${t.cat}</span>
+      <span class="task-del" onclick="deleteTask('${t.id}')">✕</span>
+    </div>
+  `).join('');
+}
+renderTasks();
+
+// ── FOCUS TIMER ──
+let timerSec=25*60,timerRunning=false,timerInterval=null,timerTotal=25*60;
+
+function setTimer(min){
+  if(timerRunning)return;
+  timerSec=min*60;timerTotal=min*60;
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay(){
+  const m=Math.floor(timerSec/60).toString().padStart(2,'0');
+  const s=(timerSec%60).toString().padStart(2,'0');
+  document.getElementById('timer-display').textContent=m+':'+s;
+}
+
+function toggleTimer(){
+  if(timerRunning){
+    clearInterval(timerInterval);timerRunning=false;
+    document.getElementById('timer-start').textContent='RESUME';
+    document.getElementById('timer-label').textContent='PAUSED';
+  } else {
+    timerRunning=true;
+    document.getElementById('timer-start').textContent='PAUSE';
+    document.getElementById('timer-label').textContent='RUNNING';
+    timerInterval=setInterval(()=>{
+      timerSec--;
+      updateTimerDisplay();
+      if(timerSec<=0){
+        clearInterval(timerInterval);timerRunning=false;
+        document.getElementById('timer-start').textContent='START';
+        document.getElementById('timer-label').textContent='DONE — LOG A WIN';
+        const task=document.getElementById('focus-task').value;
+        if(task)autoLogWin('Focus session: '+task);
+      }
+    },1000);
+  }
+}
+
+function resetTimer(){
+  clearInterval(timerInterval);timerRunning=false;
+  timerSec=timerTotal;
+  updateTimerDisplay();
+  document.getElementById('timer-start').textContent='START';
+  document.getElementById('timer-label').textContent='READY';
+}
+
+// ── WINS ──
+const WK='cmd_wins';
+let wins=JSON.parse(localStorage.getItem(WK)||'[]');
+
+function addWin(){
+  const inp=document.getElementById('win-inp');
+  const text=inp.value.trim();
+  if(!text)return;
+  wins.unshift({text,date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})});
+  localStorage.setItem(WK,JSON.stringify(wins));
+  renderWins();
+  inp.value='';
+}
+
+function autoLogWin(text){
+  wins.unshift({text,date:new Date().toLocaleDateString('en-US',{month:'short',day:'numeric'})});
+  localStorage.setItem(WK,JSON.stringify(wins));
+}
+
+function renderWins(){
+  const list=document.getElementById('win-list');
+  if(!wins.length){
+    list.innerHTML='<div class="empty"><div class="empty-icon">🏆</div><div class="empty-txt">Log your first win today</div></div>';
+    return;
+  }
+  list.innerHTML=wins.map(w=>`
+    <div class="win-item">
+      <div class="win-text">${w.text}</div>
+      <div class="win-date">${w.date}</div>
+    </div>
+  `).join('');
+}
+renderWins();
+</script>
+</body>
+</html>
